@@ -50,6 +50,55 @@ main{padding:20px 24px;display:grid;grid-template-columns:repeat(auto-fill,minma
 .cdet{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mute)}
 .cdet i{width:11px;height:11px;border-radius:50%;border:1px solid #fff4;display:inline-block}
 .cdet.sup{opacity:.6}
+[hidden]{display:none!important}
+.chip.mini{padding:4px 9px;font-size:12px}
+.chip:disabled{opacity:.4;cursor:default}
+.armar{align-self:flex-start}
+label.sw2{font-size:13px;color:var(--mute);display:flex;gap:6px;align-items:center;cursor:pointer}
+#outfits{padding:20px 24px 50px}
+.obar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.obar input[type=number]{width:190px}
+.desde{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;color:var(--mute);font-size:14px}
+.desde i,.obj i{width:12px;height:12px;border-radius:50%;display:inline-block;border:1px solid #fff4;vertical-align:-1px;margin:0 3px}
+.olay{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:22px;align-items:start}
+.ohint{font-size:13px;color:var(--mute);margin-bottom:10px}
+.combos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.combo{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px;cursor:pointer;color:var(--txt);font:inherit;font-size:12px;text-align:left;display:flex;flex-direction:column;gap:6px}
+.combo.on,.combo:hover{border-color:var(--acc)}
+.franja{display:flex;border-radius:8px;overflow:hidden}
+.franja i{flex:1}
+.ohead{display:flex;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.ohead .franja{width:120px;flex:none}
+.ohead .sub{font-size:12px}
+.total{margin-left:auto;text-align:right;font-size:12px;color:var(--mute)}
+.total b{display:block;font-size:22px;color:var(--txt)}
+.slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.slot{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:6px}
+.slot.fija{border-color:var(--ok)}
+.srot{font-size:12px;font-weight:700}
+.obj{display:block;font-weight:400;color:var(--mute);font-size:11px;margin-top:3px}
+.simg{aspect-ratio:1;background:#fff;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.simg img{width:100%;height:100%;object-fit:contain}
+.sbtn{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+.sbtn .chip{padding:5px 9px;font-size:12px;text-decoration:none}
+.sub{color:var(--mute)}
+.modal{position:fixed;inset:0;z-index:20;background:#000a;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+.mbox{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:20px;max-width:860px;width:100%;display:flex;flex-direction:column;gap:12px}
+.mbox .chip{align-self:flex-start}
+.mhead{display:flex;justify-content:space-between;align-items:center;font-size:18px}
+.ests{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.est{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:13px}
+.est.on{border-color:var(--acc)}
+.subs{display:flex;flex-wrap:wrap;gap:5px;align-items:center;font-size:12px;color:var(--mute)}
+.subdet{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;font-size:13px;display:flex;flex-direction:column;gap:8px}
+.subdet p{margin:0}
+.prog{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--acc)}
+.preg{font-size:18px;margin:6px 0}
+.ops{display:flex;flex-direction:column;gap:8px}
+.ops .chip{text-align:left}
+@media(max-width:900px){.olay{grid-template-columns:1fr}}
+@media(max-width:600px){.slots{grid-template-columns:1fr}#outfits{padding:12px 16px 40px}.ohead{flex-wrap:wrap}}
 .tallas{display:flex;flex-wrap:wrap;gap:4px}
 .tallas span{font-size:10px;border:1px solid var(--line);border-radius:5px;padding:2px 5px;color:var(--mute)}
 .tallas span.sel{border-color:var(--acc);color:var(--acc);font-weight:700}
@@ -72,7 +121,7 @@ main{padding:20px 24px;display:grid;grid-template-columns:repeat(auto-fill,minma
     <button class="chip" data-g="arriba">👕 Parte superior</button>
     <button class="chip" data-g="zapatillas">👟 Zapatillas</button>
   </div>
-  <div class="ctrl">
+  <div class="ctrl" id="ctrlCat">
     <input type="search" id="q" placeholder="Buscar: new balance, jorts, hoodie…">
     <select id="orden">
       <option value="oferta">Mejor oferta</option>
@@ -87,6 +136,7 @@ main{padding:20px 24px;display:grid;grid-template-columns:repeat(auto-fill,minma
 </header>
 <main id="grid"></main>
 <button class="chip" id="mas">Ver más</button>
+<section id="outfits" hidden></section>
 <script>
 const DATA = /*DATOS*/[];
 const $ = s => document.querySelector(s);
@@ -143,7 +193,7 @@ function render() {
   const q = $('#q').value.toLowerCase().trim(), f = $('#fuente').value,
     gen = $('#genero').value, tal = $('#talla').value;
   let L = DATA.filter(p => (!grupo || p.grupo === grupo) && (!f || p.fuente === f)
-    && p.activo
+    && p.activo && (!window.filtroExtra || window.filtroExtra(p))
     && (!gen || p.genero === gen || p.genero === 'unisex')
     && (grupo !== 'zapatillas' || !tal || (p.tallas || []).includes(tal)) && (!q || (p.titulo + ' ' + p.marca).toLowerCase().includes(q)));
   const o = $('#orden').value;
@@ -164,6 +214,7 @@ function render() {
         <div class="marca">${esc(p.marca || '—')} · ${esc(p.fuente)}${p.genero && p.genero !== 'sin dato' ? ' · ' + p.genero : ''}</div>
         <div class="tit">${esc(p.titulo)}</div>
         ${colorDet(p)}
+        ${p.color && p.color.length ? '<button class="armar chip mini" title="Armar un outfit con esta prenda">🎨 Armar outfit</button>' : ''}
         <div class="precio">${clp(p.precio)}${p.precio_antes ? `<s>${clp(p.precio_antes)}</s>` : ''}</div>
         <div class="meta"><span>${p.rating ? '★ ' + p.rating.toFixed(1) + ' (' + p.reviews + ')' : 'Sin reseñas'}</span><span>${esc(p.vendedor)}</span></div>
         ${p.colores && p.colores.length > 1 ? `<div class="colores">${p.colores.map((c, k) => `<button class="sw ${k ? '' : 'on'}" data-k="${k}" title="${esc(c.n)}" style="background:${esc(c.hex)}"></button>`).join('')}<span class="cn">${esc(p.colores[0].n)} · ${p.colores.length} colores</span></div>` : ''}
@@ -177,5 +228,7 @@ function render() {
 llenarTallas();
 render();
 </script>
+<script src="wada.js"></script>
+<script src="outfits.js"></script>
 </body>
 </html>

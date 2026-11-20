@@ -1,0 +1,100 @@
+{
+  "_ayuda": "Edita este archivo para ajustar que se busca. Las palabras se comparan sin mayusculas.",
+
+  "busquedas": {
+    "abajo": [
+      "jeans baggy",
+      "pantalon baggy",
+      "jeans wide leg",
+      "pantalon wide leg",
+      "jeans skater",
+      "jorts",
+      "buzo baggy",
+      "pantalon buzo wide leg"
+    ],
+    "arriba": [
+      "polera boxy",
+      "polera oversize",
+      "polera heavyweight",
+      "poleron boxy",
+      "poleron oversize",
+      "hoodie oversize",
+      "chaqueta oversize",
+      "chaqueta denim oversize",
+      "camisa boxy",
+      "cortaviento oversize"
+    ],
+    "zapatillas": [
+      "zapatillas new balance 550",
+      "zapatillas new balance 530",
+      "zapatillas new balance 9060",
+      "zapatillas new balance 2002r",
+      "zapatillas nike dunk low",
+      "zapatillas nike air force 1",
+      "zapatillas nike air max 95",
+      "zapatillas adidas campus",
+      "zapatillas adidas samba",
+      "zapatillas adidas forum",
+      "zapatillas adidas superstar",
+      "zapatillas vans knu skool",
+      "zapatillas asics gel 1130",
+      "zapatillas puma suede xl"
+    ]
+  },
+
+  "falabella": {
+    "activa": true,
+    "paginas": 2,
+    "_nota": "Solo entra si vende Falabella o la tienda oficial de la marca. Aqui agregas distribuidores oficiales extra.",
+    "vendedores_oficiales": ["falabella", "forus s.a.", "maui and sons", "deportes sparta", "blockstore."]
+  },
+
+  "paris_ripley": {
+    "_nota": "Solo marcas chilenas o propias de la tienda. Se busca '<marca> <termino>'.",
+    "terminos": ["baggy", "wide leg", "oversize", "boxy", "jorts"],
+    "paris": ["opposite", "foster", "hooked", "wados", "kaya unite", "d´joe", "diabolo", "froens"],
+    "ripley": ["index", "hooked", "wados", "d'joe", "barbados", "kaya unite", "diabolo", "froens"]
+  },
+
+  "tiendas_shopify": {
+    "_nota": "estilo_propio=true: toda la marca es de tu estilo, entra por tipo de prenda sin exigir 'baggy/boxy' en el nombre.",
+    "kagi.cl": {"estilo_propio": true},
+    "treino.cl": {"estilo_propio": true},
+    "dynamobrand.co": {"estilo_propio": true},
+    "ovachile.cl": {"estilo_propio": true},
+    "hazeconcept.com": {"estilo_propio": true},
+    "hardfly.cl": {"estilo_propio": true},
+    "freshbrand.cl": {"estilo_propio": true},
+    "www.vans.cl": {"estilo_propio": false}
+  },
+
+  "marcas_excluidas": ["mango", "zara", "h&m", "shein", "forever 21", "bershka", "pull&bear", "pull and bear", "stradivarius", "primark", "topshop", "temu", "fashion's park", "fashion´s park", "agw"],
+
+  "quitar_del_titulo": ["tommy jeans", "pepe jeans", "calvin klein jeans", "dirty jeans", "gloria jeans", "jeans co"],
+
+  "dias_sin_ver_para_borrar": 30,
+
+  "estilo": {
+    "_nota": "Entra si el titulo tiene una palabra de 'tipo' Y una de 'debe_tener'. 'nunca' lo saca siempre. 'nunca_salvo' lo saca salvo que tambien tenga una palabra de 'salvo'.",
+    "abajo": {
+      "debe_tener": ["baggy", "wide leg", "wide-leg", "pierna ancha", "relaxed", "loose", "skater", "holgad", "jort", "ancho", "parachute"],
+      "nunca": ["straight", "staright", "slim", "skinny", "pitillo", "jogger", "joggers", "jogging", "puño", "puños", "tapered", "ajustad", "bootcut", "flare", "oxford", "calza", "legging", "bermuda", "cargo", "utility", "talle bajo", "crop",
+        "niño", "niña", "infantil",
+        "polera", "poleron", "polerón", "polo", "rugby", "conjunto", "chaqueta", "camisa", "hoodie", "sweater", "blusa", "vestido", "falda", "top"],
+      "nunca_salvo": {"palabras": ["recto", "regular", "regular fit", "mom"], "salvo": ["baggy", "ancho", "holgad", "wide leg", "oversize"]},
+      "tipo": ["jean", "jeans", "pantalon", "pantalón", "pantalones", "buzo", "jort", "jorts", "short", "shorts", "denim", "pant", "pants"]
+    },
+    "arriba": {
+      "debe_tener": ["boxy", "oversize", "oversized", "heavyweight", "drop shoulder", "hombro caido", "hombro caído"],
+      "nunca": ["niño", "niña", "infantil", "crop top", "slim", "ajustad", "muscle", "body", "top"],
+      "tipo": ["polera", "poleras", "poleron", "polerón", "camiseta", "t-shirt", "tee", "hoodie", "chaqueta", "casaca", "camisa", "sobrecamisa", "cortaviento", "parka", "sweater", "sweatshirt", "canguro", "overshirt", "chaleco", "bomber", "cardigan", "cárdigan", "crewneck", "polo", "jersey"]
+    },
+    "zapatillas": {
+      "debe_tener": ["550", "530", "9060", "2002r", "dunk", "air force", "af1", "air max 95", "campus", "samba", "forum", "superstar", "knu skool", "knu-skool", "1130", "suede xl"],
+      "nunca": ["niño", "niña", "infantil", "bebé", "kids", "junior", "jr", "ps", "td", "gs", "sandalia", "chala", "calcetin", "calcetín", "mochila"],
+      "tipo": ["zapatilla", "zapatillas", "sneaker", "sneakers", "tenis", "dunk", "air force", "campus", "samba", "forum", "superstar", "knu skool"]
+    }
+  },
+
+  "tiendas_estilo_nunca": ["falda", "bufanda", "bolso", "gorro", "jockey", "tote", "giftcard", "gift card", "vestido", "blusa", "calcet", "crossbody", "billetera", "llavero", "sticker", "cinturon", "cinturón", "lentes", "mochila", "riñonera", "bucket"]
+}

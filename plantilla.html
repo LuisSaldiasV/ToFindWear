@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Comparador de ropa</title>
+<link rel="icon" href="icono.png">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0e0f14;--card:#171922;--line:#262935;--txt:#eceae4;--mute:#8b8d99;--acc:#ff5e3a;--ok:#3cc878;--warn:#f5b83d}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:'Space Grotesk',system-ui,sans-serif}
+header{position:sticky;top:0;z-index:5;background:rgba(14,15,20,.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:14px 24px}
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.top img{width:42px;height:42px}
+h1{font-size:22px;margin:0;letter-spacing:-.5px}
+h1 span{color:var(--acc)}
+.sub{color:var(--mute);font-size:13px}
+.stats{margin-left:auto;display:flex;gap:18px;font-size:13px;color:var(--mute)}
+.stats b{display:block;color:var(--txt);font-size:18px}
+.ctrl{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.chip{border:1px solid var(--line);background:var(--card);color:var(--txt);padding:8px 14px;border-radius:999px;cursor:pointer;font:inherit;font-size:14px}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#111;font-weight:700}
+input,select{background:var(--card);border:1px solid var(--line);color:var(--txt);padding:8px 12px;border-radius:10px;font:inherit;font-size:14px}
+input[type=search]{flex:1;min-width:200px}
+label.sw{font-size:13px;color:var(--mute);display:flex;gap:6px;align-items:center}
+main{padding:20px 24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:.15s;text-decoration:none;color:inherit;position:relative}
+.card:hover{transform:translateY(-3px);border-color:var(--acc)}
+.card.old{opacity:.5}
+.img{aspect-ratio:1;background:#fff;display:flex;align-items:center;justify-content:center}
+.img img{width:100%;height:100%;object-fit:contain}
+.badges{position:absolute;top:10px;left:10px;display:flex;flex-direction:column;gap:5px}
+.b{font-size:11px;font-weight:700;padding:4px 8px;border-radius:6px;color:#111}
+.b.d{background:var(--acc)}.b.m{background:var(--ok)}.b.u{background:var(--warn)}
+.score{position:absolute;top:10px;right:10px;background:#111c;color:#fff;font-weight:700;border-radius:10px;padding:5px 9px;font-size:13px}
+.body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:6px;flex:1}
+.marca{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--mute)}
+.tit{font-size:14px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.precio{font-size:22px;font-weight:700;margin-top:auto}
+.precio s{font-size:13px;color:var(--mute);font-weight:400;margin-left:6px}
+.meta{display:flex;justify-content:space-between;font-size:12px;color:var(--mute)}
+.bar{height:5px;background:var(--line);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%}
+.colores{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
+.sw{width:18px;height:18px;border-radius:50%;border:2px solid var(--line);cursor:pointer;padding:0}
+.sw.on{border-color:var(--txt);box-shadow:0 0 0 2px var(--acc)}
+.cn{font-size:11px;color:var(--mute);margin-left:4px}
+.nofoto{color:#999;font-size:13px}
+.cdet{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--mute)}
+.cdet i{width:11px;height:11px;border-radius:50%;border:1px solid #fff4;display:inline-block}
+.cdet.sup{opacity:.6}
+[hidden]{display:none!important}
+.chip.mini{padding:4px 9px;font-size:12px}
+.chip:disabled{opacity:.4;cursor:default}
+.armar{align-self:flex-start}
+label.sw2{font-size:13px;color:var(--mute);display:flex;gap:6px;align-items:center;cursor:pointer}
+#outfits{padding:20px 24px 50px}
+.obar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:14px}
+.obar input[type=number]{width:190px}
+.desde{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px;color:var(--mute);font-size:14px}
+.desde i,.obj i{width:12px;height:12px;border-radius:50%;display:inline-block;border:1px solid #fff4;vertical-align:-1px;margin:0 3px}
+.olay{display:grid;grid-template-columns:minmax(0,3fr) minmax(0,2fr);gap:22px;align-items:start}
+.ohint{font-size:13px;color:var(--mute);margin-bottom:10px}
+.combos{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.combo{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:8px;cursor:pointer;color:var(--txt);font:inherit;font-size:12px;text-align:left;display:flex;flex-direction:column;gap:6px}
+.combo.on,.combo:hover{border-color:var(--acc)}
+.franja{display:flex;border-radius:8px;overflow:hidden}
+.franja i{flex:1}
+.ohead{display:flex;gap:14px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:12px}
+.ohead .franja{width:120px;flex:none}
+.ohead .sub{font-size:12px}
+.total{margin-left:auto;text-align:right;font-size:12px;color:var(--mute)}
+.total b{display:block;font-size:22px;color:var(--txt)}
+.slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.slot{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:6px}
+.slot.fija{border-color:var(--ok)}
+.srot{font-size:12px;font-weight:700}
+.obj{display:block;font-weight:400;color:var(--mute);font-size:11px;margin-top:3px}
+.simg{aspect-ratio:1;background:#fff;border-radius:10px;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.simg img{width:100%;height:100%;object-fit:contain}
+.sbtn{display:flex;flex-wrap:wrap;gap:6px;margin-top:auto}
+.sbtn .chip{padding:5px 9px;font-size:12px;text-decoration:none}
+.sub{color:var(--mute)}
+.modal{position:fixed;inset:0;z-index:20;background:#000a;display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;overflow:auto}
+.mbox{background:var(--bg);border:1px solid var(--line);border-radius:18px;padding:20px;max-width:860px;width:100%;display:flex;flex-direction:column;gap:12px}
+.mbox .chip{align-self:flex-start}
+.mhead{display:flex;justify-content:space-between;align-items:center;font-size:18px}
+.ests{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.est{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:13px}
+.est.on{border-color:var(--acc)}
+.subs{display:flex;flex-wrap:wrap;gap:5px;align-items:center;font-size:12px;color:var(--mute)}
+.subdet{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px;font-size:13px;display:flex;flex-direction:column;gap:8px}
+.subdet p{margin:0}
+.prog{height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--acc)}
+.preg{font-size:18px;margin:6px 0}
+.ops{display:flex;flex-direction:column;gap:8px}
+.ops .chip{text-align:left}
+@media(max-width:900px){.olay{grid-template-columns:1fr}}
+@media(max-width:600px){.slots{grid-template-columns:1fr}#outfits{padding:12px 16px 40px}.ohead{flex-wrap:wrap}}
+.tallas{display:flex;flex-wrap:wrap;gap:4px}
+.tallas span{font-size:10px;border:1px solid var(--line);border-radius:5px;padding:2px 5px;color:var(--mute)}
+.tallas span.sel{border-color:var(--acc);color:var(--acc);font-weight:700}
+.tallas span.na{border:none;padding:0}
+.empty{grid-column:1/-1;text-align:center;color:var(--mute);padding:60px}
+#mas{display:block;margin:0 auto 40px}
+@media(max-width:600px){header,main{padding:12px 16px}.stats{margin-left:0}}
+</style>
+</head>
+<body>
+<header>
+  <div class="top">
+    <img src="icono.png" alt="">
+    <div><h1>Comparador <span>de ropa</span></h1><div class="sub">Baggy · Boxy · Zapatillas — actualizado {{FECHA}}</div></div>
+    <div class="stats"><div><b id="sTot">0</b>productos</div><div><b id="sDesc">0</b>con descuento</div><div><b id="sMin">0</b>en mínimo</div></div>
+  </div>
+  <div class="ctrl" id="grupos">
+    <button class="chip on" data-g="">Todo</button>
+    <button class="chip" data-g="abajo">👖 Pantalones</button>
+    <button class="chip" data-g="arriba">👕 Parte superior</button>
+    <button class="chip" data-g="zapatillas">👟 Zapatillas</button>
+  </div>
+  <div class="ctrl" id="ctrlCat">
+    <input type="search" id="q" placeholder="Buscar: new balance, jorts, hoodie…">
+    <select id="orden">
+      <option value="oferta">Mejor oferta</option>
+      <option value="precio">Menor precio</option>
+      <option value="desc">Mayor descuento</option>
+      <option value="confianza">Más confiable</option>
+    </select>
+    <select id="fuente"><option value="">Todas las tiendas</option></select>
+    <select id="genero"><option value="">Hombre y mujer</option><option value="hombre">Hombre</option><option value="mujer">Mujer</option></select>
+    <select id="talla"><option value="">Todas las tallas</option></select>
+  </div>
+</header>
+<main id="grid"></main>
+<button class="chip" id="mas">Ver más</button>
+<section id="outfits" hidden></section>
+<script>
+const DATA = /*DATOS*/[];
+const $ = s => document.querySelector(s);
+const clp = n => '$' + n.toLocaleString('es-CL');
+let grupo = '', limite = 60;
+[...new Set(DATA.map(p => p.fuente))].sort().forEach(f => $('#fuente').add(new Option(f, f)));
+function llenarTallas() {
+  const sel = $('#talla'), act = sel.value;
+  sel.style.display = grupo === 'zapatillas' ? '' : 'none';
+  const ts = [...new Set(DATA.filter(p => !grupo || p.grupo === grupo).flatMap(p => p.tallas || []))]
+    .sort((a, b) => (parseFloat(a) - parseFloat(b)) || ORD.indexOf(a.toUpperCase()) - ORD.indexOf(b.toUpperCase()) || a.localeCompare(b));
+  sel.length = 1; ts.forEach(t => sel.add(new Option(t, t)));
+  sel.value = ts.includes(act) ? act : '';
+}
+const ORD = ['XXS','XS','S','M','L','XL','XXL','2XL','XXXL','3XL','4XL'];
+document.querySelectorAll('#grupos .chip').forEach(b => b.onclick = () => {
+  document.querySelectorAll('#grupos .chip').forEach(x => x.classList.remove('on'));
+  b.classList.add('on'); grupo = b.dataset.g; limite = 60; llenarTallas(); render();
+});
+['#q','#orden','#fuente','#genero','#talla'].forEach(s => $(s).addEventListener('input', () => { limite = 60; render(); }));
+$('#mas').onclick = () => { limite += 60; render(); };
+const color = v => v >= 70 ? 'var(--ok)' : v >= 45 ? 'var(--warn)' : 'var(--acc)';
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function k0(b) { return b.dataset.k === '0'; }
+function fotoError(im) {
+  if (!im.dataset.tried && im.src !== im.dataset.main) { im.dataset.tried = 1; im.src = im.dataset.main; return; }
+  im.dataset.tried = 1;
+  const alt = im.dataset.main.replace(/_1\/public$/, '_2/public');
+  if (im.src !== alt && !im.dataset.alt) { im.dataset.alt = 1; im.src = alt; return; }
+  im.replaceWith(Object.assign(document.createElement('span'), {className: 'nofoto', textContent: 'Sin foto'}));
+}
+function tallasHTML(ts, tal) {
+  return ts && ts.length ? ts.map(t => `<span class="${t === tal ? 'sel' : ''}">${esc(t)}</span>`).join('') : '<span class="na">Tallas: ver en tienda</span>';
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('.sw'); if (!b) return;
+  e.preventDefault(); e.stopPropagation();
+  const card = b.closest('.card'), p = DATA[+card.dataset.i], c = p.colores[+b.dataset.k];
+  card.href = c.url; const im = card.querySelector('.img img'); if (im) { im.dataset.tried = ''; im.src = k0(b) ? im.dataset.main : c.img; }
+  card.querySelector('.cn').textContent = `${c.n} · ${p.colores.length} colores`;
+  card.querySelector('.tallas').innerHTML = tallasHTML(c.tallas.length ? c.tallas : p.tallas, $('#talla').value);
+  card.querySelectorAll('.sw').forEach(x => x.classList.toggle('on', x === b));
+});
+const ORIGEN = {variante: 'según la tienda', titulo: 'según el nombre', supuesto: 'supuesto: jeans sin color indicado'};
+function colorDet(p) {
+  const cs = p.color || [];
+  if (!cs.length) return '<div class="cdet sup" title="No se pudo detectar el color">Color: sin detectar</div>';
+  const u = [...new Map(cs.map(c => [c.n, c])).values()];
+  return `<div class="cdet ${cs[0].origen === 'supuesto' ? 'sup' : ''}" title="Color ${ORIGEN[cs[0].origen]}">`
+    + u.slice(0, 6).map(c => `<i style="background:${esc(c.hex)}"></i>`).join('')
+    + `<span>${esc(u.slice(0, 3).map(c => c.n).join(', '))}${u.length > 3 ? '…' : ''}</span></div>`;
+}
+function render() {
+  const q = $('#q').value.toLowerCase().trim(), f = $('#fuente').value,
+    gen = $('#genero').value, tal = $('#talla').value;
+  let L = DATA.filter(p => (!grupo || p.grupo === grupo) && (!f || p.fuente === f)
+    && p.activo && (!window.filtroExtra || window.filtroExtra(p))
+    && (!gen || p.genero === gen || p.genero === 'unisex')
+    && (grupo !== 'zapatillas' || !tal || (p.tallas || []).includes(tal)) && (!q || (p.titulo + ' ' + p.marca).toLowerCase().includes(q)));
+  const o = $('#orden').value;
+  L.sort((a, b) => o === 'precio' ? a.precio - b.precio : b[o] - a[o]);
+  $('#sTot').textContent = L.length;
+  $('#sDesc').textContent = L.filter(p => p.desc > 0).length;
+  $('#sMin').textContent = L.filter(p => p.estado === 'minimo').length;
+  $('#grid').innerHTML = L.slice(0, limite).map(p => `
+    <a class="card ${p.activo ? '' : 'old'}" href="${esc(p.url)}" target="_blank" title="${esc(p.titulo)}" data-i="${DATA.indexOf(p)}">
+      <div class="img">${p.img ? `<img src="${esc(p.img)}" data-main="${esc(p.img)}" loading="lazy" alt="" onerror="fotoError(this)">` : '<span class="nofoto">Sin foto</span>'}</div>
+      <div class="badges">
+        ${p.desc > 0 ? `<span class="b d">-${p.desc}%</span>` : ''}
+        ${p.estado === 'minimo' ? '<span class="b m">Mínimo histórico</span>' : p.estado === 'bajo' ? '<span class="b m">Bajo promedio</span>' : ''}
+        ${p.estado === 'subio' ? '<span class="b u">Subió</span>' : ''}
+      </div>
+      <div class="score" title="Puntaje de oferta">${p.oferta}</div>
+      <div class="body">
+        <div class="marca">${esc(p.marca || '—')} · ${esc(p.fuente)}${p.genero && p.genero !== 'sin dato' ? ' · ' + p.genero : ''}</div>
+        <div class="tit">${esc(p.titulo)}</div>
+        ${colorDet(p)}
+        ${p.color && p.color.length ? '<button class="armar chip mini" title="Armar un outfit con esta prenda">🎨 Armar outfit</button>' : ''}
+        <div class="precio">${clp(p.precio)}${p.precio_antes ? `<s>${clp(p.precio_antes)}</s>` : ''}</div>
+        <div class="meta"><span>${p.rating ? '★ ' + p.rating.toFixed(1) + ' (' + p.reviews + ')' : 'Sin reseñas'}</span><span>${esc(p.vendedor)}</span></div>
+        ${p.colores && p.colores.length > 1 ? `<div class="colores">${p.colores.map((c, k) => `<button class="sw ${k ? '' : 'on'}" data-k="${k}" title="${esc(c.n)}" style="background:${esc(c.hex)}"></button>`).join('')}<span class="cn">${esc(p.colores[0].n)} · ${p.colores.length} colores</span></div>` : ''}
+        <div class="tallas">${tallasHTML(p.colores && p.colores.length && p.colores[0].tallas.length ? p.colores[0].tallas : p.tallas, tal)}</div>
+        <div class="meta"><span>Confianza</span><span>${p.confianza}/100</span></div>
+        <div class="bar"><i style="width:${p.confianza}%;background:${color(p.confianza)}"></i></div>
+      </div>
+    </a>`).join('') || '<div class="empty">No hay productos con esos filtros.</div>';
+  $('#mas').style.display = L.length > limite ? 'block' : 'none';
+}
+llenarTallas();
+render();
+</script>
+<script src="wada.js"></script>
+<script src="outfits.js"></script>
+</body>
+</html>

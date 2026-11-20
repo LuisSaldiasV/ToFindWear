@@ -106,6 +106,21 @@ label.sw2{font-size:13px;color:var(--mute);display:flex;gap:6px;align-items:cent
 .empty{grid-column:1/-1;text-align:center;color:var(--mute);padding:60px}
 #mas{display:block;margin:0 auto 40px}
 @media(max-width:600px){header,main{padding:12px 16px}.stats{margin-left:0}}
+#menuBtn{display:none;margin-left:auto;padding:7px 12px}
+#menuBtn .n{background:#111;color:var(--acc);border-radius:999px;padding:0 6px;margin-left:4px;font-size:12px}
+#menuBtn.on .n{color:var(--txt)}
+@media(max-width:600px){
+  header{padding:8px 14px}
+  .top{gap:10px;flex-wrap:nowrap}
+  .top img{width:30px;height:30px}
+  h1{font-size:17px}
+  .top .sub{font-size:11px}
+  #menuBtn{display:inline-flex;align-items:center;flex:none}
+  header:not(.abierto) #filtros,header:not(.abierto) .stats{display:none}
+  header.abierto{max-height:85vh;overflow-y:auto}
+  header.abierto .top{flex-wrap:wrap}
+  .stats{order:3;width:100%;margin-top:4px;gap:14px}
+}
 </style>
 </head>
 <body>
@@ -114,7 +129,9 @@ label.sw2{font-size:13px;color:var(--mute);display:flex;gap:6px;align-items:cent
     <img src="icono.png" alt="">
     <div><h1>Comparador <span>de ropa</span></h1><div class="sub">Baggy · Boxy · Zapatillas — actualizado 19-11-2026</div></div>
     <div class="stats"><div><b id="sTot">0</b>productos</div><div><b id="sDesc">0</b>con descuento</div><div><b id="sMin">0</b>en mínimo</div></div>
+    <button class="chip" id="menuBtn" aria-expanded="false" aria-controls="filtros">☰ Filtros</button>
   </div>
+  <div id="filtros">
   <div class="ctrl" id="grupos">
     <button class="chip on" data-g="">Todo</button>
     <button class="chip" data-g="abajo">👖 Pantalones</button>
@@ -132,6 +149,7 @@ label.sw2{font-size:13px;color:var(--mute);display:flex;gap:6px;align-items:cent
     <select id="fuente"><option value="">Todas las tiendas</option></select>
     <select id="genero"><option value="">Hombre y mujer</option><option value="hombre">Hombre</option><option value="mujer">Mujer</option></select>
     <select id="talla"><option value="">Todas las tallas</option></select>
+  </div>
   </div>
 </header>
 <main id="grid"></main>
@@ -230,5 +248,28 @@ render();
 </script>
 <script src="wada.js"></script>
 <script src="outfits.js"></script>
+<script>
+// Menú desplegable en móvil: los filtros se ocultan para no tapar el scroll.
+(() => {
+  const head = document.querySelector('header'), btn = document.getElementById('menuBtn');
+  let abiertoEn = 0;
+  const abrir = si => {
+    head.classList.toggle('abierto', si); btn.classList.toggle('on', si);
+    btn.setAttribute('aria-expanded', si); abiertoEn = scrollY;
+  };
+  btn.onclick = () => abrir(!head.classList.contains('abierto'));
+  const contar = () => {
+    let n = ['q','fuente','genero','talla'].filter(id => document.getElementById(id).value).length;
+    if (document.querySelector('#grupos .chip.on:not([data-g=""])')) n++;
+    btn.innerHTML = '☰ Filtros' + (n ? `<span class="n">${n}</span>` : '');
+  };
+  head.addEventListener('input', () => setTimeout(contar));
+  head.addEventListener('click', () => setTimeout(contar));
+  addEventListener('scroll', () => {
+    if (!head.classList.contains('abierto') || head.contains(document.activeElement) && document.activeElement.matches('input,select')) return;
+    if (Math.abs(scrollY - abiertoEn) > 200) abrir(false);
+  }, {passive: true});
+})();
+</script>
 </body>
 </html>

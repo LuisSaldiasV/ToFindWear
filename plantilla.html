@@ -132,6 +132,7 @@ label.sw2{font-size:13px;color:var(--mute);display:flex;gap:6px;align-items:cent
     <select id="fuente"><option value="">Todas las tiendas</option></select>
     <select id="genero"><option value="">Hombre y mujer</option><option value="hombre">Hombre</option><option value="mujer">Mujer</option></select>
     <select id="talla"><option value="">Todas las tallas</option></select>
+    <label class="sw2" title="Oculta prendas que informan tallas y ninguna es la tuya (config.json → mis_tallas)"><input type="checkbox" id="miTalla"> Solo mi talla</label>
   </div>
 </header>
 <main id="grid"></main>
@@ -142,6 +143,9 @@ const DATA = /*DATOS*/[];
 const $ = s => document.querySelector(s);
 const clp = n => '$' + n.toLocaleString('es-CL');
 let grupo = '', limite = 60;
+try { $('#miTalla').checked = localStorage.getItem('miTalla') !== '0'; } catch (e) { $('#miTalla').checked = true; }
+$('#miTalla').addEventListener('change', () => { try { localStorage.setItem('miTalla', $('#miTalla').checked ? '1' : '0'); } catch (e) {} });
+function tallaOk(p) { return !$('#miTalla').checked || p.mi_talla !== false; }
 [...new Set(DATA.map(p => p.fuente))].sort().forEach(f => $('#fuente').add(new Option(f, f)));
 function llenarTallas() {
   const sel = $('#talla'), act = sel.value;
@@ -156,7 +160,7 @@ document.querySelectorAll('#grupos .chip').forEach(b => b.onclick = () => {
   document.querySelectorAll('#grupos .chip').forEach(x => x.classList.remove('on'));
   b.classList.add('on'); grupo = b.dataset.g; limite = 60; llenarTallas(); render();
 });
-['#q','#orden','#fuente','#genero','#talla'].forEach(s => $(s).addEventListener('input', () => { limite = 60; render(); }));
+['#q','#orden','#fuente','#genero','#talla','#miTalla'].forEach(s => $(s).addEventListener('input', () => { limite = 60; render(); }));
 $('#mas').onclick = () => { limite += 60; render(); };
 const color = v => v >= 70 ? 'var(--ok)' : v >= 45 ? 'var(--warn)' : 'var(--acc)';
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -164,7 +168,7 @@ function k0(b) { return b.dataset.k === '0'; }
 function fotoError(im) {
   if (!im.dataset.tried && im.src !== im.dataset.main) { im.dataset.tried = 1; im.src = im.dataset.main; return; }
   im.dataset.tried = 1;
-  const alt = im.dataset.main.replace(/_1\/public$/, '_2/public');
+  const m = im.dataset.main, alt = /_1\/public$/.test(m) ? m.replace(/_1\/public$/, '_01/public') : m.replace(/_01\/public$/, '_1/public');
   if (im.src !== alt && !im.dataset.alt) { im.dataset.alt = 1; im.src = alt; return; }
   im.replaceWith(Object.assign(document.createElement('span'), {className: 'nofoto', textContent: 'Sin foto'}));
 }
@@ -193,7 +197,7 @@ function render() {
   const q = $('#q').value.toLowerCase().trim(), f = $('#fuente').value,
     gen = $('#genero').value, tal = $('#talla').value;
   let L = DATA.filter(p => (!grupo || p.grupo === grupo) && (!f || p.fuente === f)
-    && p.activo && (!window.filtroExtra || window.filtroExtra(p))
+    && p.activo && tallaOk(p) && (!window.filtroExtra || window.filtroExtra(p))
     && (!gen || p.genero === gen || p.genero === 'unisex')
     && (grupo !== 'zapatillas' || !tal || (p.tallas || []).includes(tal)) && (!q || (p.titulo + ' ' + p.marca).toLowerCase().includes(q)));
   const o = $('#orden').value;
@@ -203,7 +207,7 @@ function render() {
   $('#sMin').textContent = L.filter(p => p.estado === 'minimo').length;
   $('#grid').innerHTML = L.slice(0, limite).map(p => `
     <a class="card ${p.activo ? '' : 'old'}" href="${esc(p.url)}" target="_blank" title="${esc(p.titulo)}" data-i="${DATA.indexOf(p)}">
-      <div class="img">${p.img ? `<img src="${esc(p.img)}" data-main="${esc(p.img)}" loading="lazy" alt="" onerror="fotoError(this)">` : '<span class="nofoto">Sin foto</span>'}</div>
+      <div class="img">${p.img ? `<img src="${esc(p.img)}" data-main="${esc(p.img)}" loading="lazy" referrerpolicy="no-referrer" alt="" onerror="fotoError(this)">` : '<span class="nofoto">Sin foto</span>'}</div>
       <div class="badges">
         ${p.desc > 0 ? `<span class="b d">-${p.desc}%</span>` : ''}
         ${p.estado === 'minimo' ? '<span class="b m">Mínimo histórico</span>' : p.estado === 'bajo' ? '<span class="b m">Bajo promedio</span>' : ''}

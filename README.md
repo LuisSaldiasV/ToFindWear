@@ -14,7 +14,7 @@ Busca en tiendas oficiales, filtra lo que no calza con el estilo y genera una p�
 
 ## Uso
 
-Requiere Python 3. No necesita instalar dependencias.
+Requiere Python 3. Opcional: **Pillow** (`pip install pillow`) para leer el color de cada prenda desde su foto; sin Pillow se usan solo los nombres de color de las tiendas.
 
 ```bash
 python comparador.py              # actualiza todo
@@ -22,6 +22,7 @@ python comparador.py abajo        # solo pantalones / jorts / buzos
 python comparador.py arriba       # solo parte superior
 python comparador.py zapatillas   # solo zapatillas
 python comparador.py ver          # no busca, solo regenera la página
+python comparador.py colores      # no busca, mide colores de fotos nuevas y regenera
 ```
 
 En Windows también puedes usar `abrir.bat`, que muestra un menú.

@@ -6,6 +6,7 @@ Uso:
     python comparador.py arriba       # solo parte superior
     python comparador.py zapatillas   # solo zapatillas
     python comparador.py ver          # no busca, solo regenera la pagina
+    python comparador.py colores      # no busca, mide colores de fotos nuevas y regenera
 Genera resultados.html y guarda historial de precios en precios.db.
 """
 import argparse, json, re, sqlite3, sys, threading, time, urllib.error, urllib.parse, urllib.request
@@ -14,6 +15,7 @@ from datetime import date, timedelta
 from pathlib import Path
 
 import colores
+import colores_foto
 
 BASE = Path(__file__).parent
 GRUPOS = ("abajo", "arriba", "zapatillas")
@@ -384,6 +386,8 @@ def db():
     for col in ("tallas", "genero", "colores"):
         if col not in cols:
             c.execute(f"ALTER TABLE productos ADD COLUMN {col} TEXT")
+    c.execute("""CREATE TABLE IF NOT EXISTS color_foto(
+        img TEXT PRIMARY KEY, n TEXT, hex TEXT, neutro INTEGER, url_ok TEXT, fecha TEXT)""")
     return c
 
 
@@ -417,6 +421,53 @@ def podar(c, cfg):
         log(f"Borrados {len(viejos)} productos que no aparecen hace mas de {cfg.get('dias_sin_ver_para_borrar', 30)} dias.")
 
 
+def fotos_a_revisar(c):
+    """(img, grupo) de productos vigentes cuyo color aun no se ha medido en la foto."""
+    hechas = {r[0] for r in c.execute("SELECT img FROM color_foto")}
+    desde = (date.today() - timedelta(days=4)).isoformat()
+    pend = {}
+    for img, grupo, cols in c.execute("SELECT img, grupo, colores FROM productos WHERE ultima_vez >= ?", (desde,)):
+        vs = [v.get("img") for v in json.loads(cols or "[]") if v.get("img")]
+        for u in vs or [img]:
+            if u and u not in hechas:
+                pend[u] = grupo
+    return list(pend.items())
+
+
+def colorear_fotos(c):
+    """Mide el color de cada foto nueva y lo guarda (cada foto se analiza una sola vez)."""
+    if not colores_foto.disponible():
+        log("Colores por foto: falta Pillow (pip install pillow), se usan solo los nombres de las tiendas.")
+        return
+    pend = fotos_a_revisar(c)
+    if not pend:
+        return
+    log(f"Colores por foto: analizando {len(pend)} imagenes nuevas...")
+    hoy = date.today().isoformat()
+    with ThreadPoolExecutor(4) as ex:   # imagenes de CDN: pocas a la vez para no molestar
+        res = list(ex.map(lambda x: (x[0], colores_foto.color_de_foto(*x)), pend))
+    ok = 0
+    for img, r in res:
+        if r:
+            ok += 1
+            c.execute("INSERT OR REPLACE INTO color_foto VALUES(?,?,?,?,?,?)", (img, r["n"], r["hex"], int(r["neutro"]), r["url"], hoy))
+    c.commit()
+    log(f"Colores por foto: {ok} de {len(pend)} leidas (las fallidas se reintentan en la proxima corrida).")
+
+
+def es_mi_talla(cfg, p):
+    """True/False si la prenda trae tallas y alguna es tuya; None si la tienda no informa tallas."""
+    mias = {t.upper() for t in cfg.get("mis_tallas", {}).get(p["grupo"], [])}
+    if not mias or not p["tallas"]:
+        return None
+    # "44", "T-44", "44 (34)", "L/XL" -> se compara cada pedazo; "34-30" es cintura-largo: solo cuenta la cintura
+    def pedazos(t):
+        t = str(t).upper().strip()
+        m = re.fullmatch(r"(\d{2})\s*[-/X]\s*(\d{2})", t)
+        return [m.group(1)] if m else [x for x in re.split(r"[^0-9A-Z]+", t) if x]
+    return any(x in mias for t in p["tallas"] for x in pedazos(t))
+
+
 def cargar_todo(c, cfg):
     """Lee la base, aplica el filtro de estilo actual (sin borrar nada) y calcula el puntaje de oferta."""
     c.row_factory = sqlite3.Row
@@ -426,6 +477,8 @@ def cargar_todo(c, cfg):
     propias = {d.removeprefix("www."): o.get("estilo_propio") for d, o in cfg.get("tiendas_shopify", {}).items() if not d.startswith("_")}
     # ultima lectura exitosa de cada tienda: si una tienda estuvo bloqueada, sus productos no caducan
     ultima_lectura = {f: u for f, u in c.execute("SELECT fuente, MAX(ultima_vez) FROM productos GROUP BY fuente")}
+    foto = {r["img"]: {"n": r["n"], "hex": r["hex"], "neutro": bool(r["neutro"]), "url": r["url_ok"]}
+            for r in c.execute("SELECT * FROM color_foto")}
     out = []
     for r in c.execute("SELECT * FROM productos"):
         p = dict(r)
@@ -434,7 +487,12 @@ def cargar_todo(c, cfg):
             continue
         p["tallas"] = json.loads(p["tallas"] or "[]")
         p["colores"] = json.loads(p["colores"] or "[]")
-        p["color"] = colores.detectar(p)
+        p["color"] = colores.detectar(p, foto)
+        for v in p["colores"]:                     # foto que si carga (Falabella a veces usa _01 y no _1)
+            if v.get("img") in foto:
+                v["img"] = foto[v["img"]]["url"]
+        if p["img"] in foto:
+            p["img"] = foto[p["img"]]["url"]
         for c_ in p["color"]:                      # circulos de las tarjetas con el tono realista
             if c_["k"] is not None:
                 p["colores"][c_["k"]]["hex"] = c_["hex"]
@@ -454,7 +512,11 @@ def cargar_todo(c, cfg):
             p["estado"] = "normal"
         p["desc"] = round(100 * (1 - p["precio"] / p["precio_antes"])) if p["precio_antes"] else 0
         bonus = {"minimo": 25, "bajo": 15, "subio": -15}.get(p["estado"], 0)
+        if p["grupo"] == "arriba":                 # ancho pero corto: suben en el orden
+            t = normalizar(cfg, p["titulo"])
+            bonus += max([v for w, v in cfg.get("prioridad_arriba", {}).items() if not w.startswith("_") and f" {w} " in t] or [0])
         p["oferta"] = round(p["confianza"] * 0.5 + min(p["desc"], 70) * 0.7 + bonus)
+        p["mi_talla"] = es_mi_talla(cfg, p)
         ref = date.fromisoformat(ultima_lectura.get(p["fuente"]) or p["ultima_vez"])
         p["activo"] = (ref - date.fromisoformat(p["ultima_vez"])).days <= 3
         out.append(p)
@@ -488,6 +550,7 @@ def actualizar(grupos):
         resumen.append(f"{k}: {n}")
     c.commit()
     podar(c, cfg)
+    colorear_fotos(c)
     log(f"\nActualizado en {round(time.time() - t0)}s  ->  " + " | ".join(resumen))
     log("Consultas hechas: " + ", ".join(f"{k}: {v}" for k, v in CONTEO.items()))
     return c, cfg
@@ -502,10 +565,12 @@ def generar_html(items):
 
 def main(argv=None):
     ap = argparse.ArgumentParser()
-    ap.add_argument("grupo", nargs="?", choices=[*GRUPOS, "todo", "ver"], default="todo")
+    ap.add_argument("grupo", nargs="?", choices=[*GRUPOS, "todo", "ver", "colores"], default="todo")
     a = ap.parse_args(argv)
-    if a.grupo == "ver":
+    if a.grupo in ("ver", "colores"):
         c, cfg = db(), json.loads((BASE / "config.json").read_text(encoding="utf-8"))
+        if a.grupo == "colores":
+            colorear_fotos(c)
     else:
         c, cfg = actualizar(list(GRUPOS) if a.grupo == "todo" else [a.grupo])
     items = cargar_todo(c, cfg)

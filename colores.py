@@ -87,21 +87,44 @@ def buscar(texto):
     return None
 
 
-def detectar(p):
-    """Lista de colores de una prenda: uno por variante de color si la tienda los da, si no desde el titulo.
+def _rgb(h):
+    return tuple(int(h[i:i + 2], 16) for i in (1, 3, 5))
 
+
+def _parecidos(h1, h2):
+    """Dos hex del mismo color a grandes rasgos (para ver si la etiqueta de la tienda calza con la foto)."""
+    import colores_foto
+    return colores_foto._dist(_rgb(h1), _rgb(h2)) < 30
+
+
+def _con_foto(etiqueta, medido, k):
+    """La foto manda en el tono. El nombre de la tienda se respeta solo si calza con lo que se ve."""
+    if etiqueta and _parecidos(etiqueta["hex"], medido["hex"]):
+        return dict(etiqueta, hex=medido["hex"], origen="foto", k=k)
+    return {"n": medido["n"], "hex": medido["hex"], "neutro": medido["neutro"], "origen": "foto", "k": k}
+
+
+def detectar(p, foto=None):
+    """Lista de colores de una prenda: uno por variante de color si la tienda los da, si no uno general.
+
+    foto: {url_imagen: {n, hex, neutro}} con el color medido en cada foto (ver colores_foto.py).
     Cada item: {n, hex, neutro, origen, k}  (k = indice de la variante en p['colores'], o None)
-    origen: 'variante' (nombre que da la tienda), 'titulo' (encontrado en el nombre del producto),
-            'supuesto' (jeans sin color -> denim).
+    origen: 'foto' (medido en la imagen), 'variante' (nombre que da la tienda),
+            'titulo' (encontrado en el nombre del producto), 'supuesto' (jeans sin color -> denim).
     """
+    foto = foto or {}
     out = []
     for k, v in enumerate(p.get("colores") or []):
-        c = buscar(v.get("n"))
-        if c:
+        c, m = buscar(v.get("n")), foto.get(v.get("img"))
+        if m:
+            out.append(_con_foto(c, m, k))
+        elif c:
             out.append(dict(c, origen="variante", k=k))
     if out:
         return out
-    c = buscar(p.get("titulo"))
+    c, m = buscar(p.get("titulo")), foto.get(p.get("img"))
+    if m:
+        return [_con_foto(c, m, None)]
     if c:
         return [dict(c, origen="titulo", k=None)]
     t = _norm(p.get("titulo"))

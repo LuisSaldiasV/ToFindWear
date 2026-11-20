@@ -10,7 +10,10 @@
       "jeans skater",
       "jorts",
       "buzo baggy",
-      "pantalon buzo wide leg"
+      "pantalon buzo wide leg",
+      "pantalon cargo baggy",
+      "pantalon parachute",
+      "jeans carpenter"
     ],
     "arriba": [
       "polera boxy",
@@ -38,7 +41,14 @@
       "zapatillas adidas superstar",
       "zapatillas vans knu skool",
       "zapatillas asics gel 1130",
-      "zapatillas puma suede xl"
+      "zapatillas puma suede xl",
+      "zapatillas nike air max plus",
+      "zapatillas nike air more uptempo",
+      "zapatillas nike shox",
+      "zapatillas new balance 1906r",
+      "zapatillas adidas samba xlg",
+      "botas timberland",
+      "dr martens"
     ]
   },
 
@@ -74,25 +84,38 @@
 
   "dias_sin_ver_para_borrar": 30,
 
+  "mis_tallas": {
+    "_nota": "Con 'Solo mi talla' en la pagina se ocultan prendas que traen tallas y ninguna es tuya. Las que no informan tallas se muestran igual.",
+    "abajo": ["44", "46", "34", "36", "L", "XL"],
+    "arriba": ["M", "L"]
+  },
+
+  "prioridad_arriba": {
+    "_nota": "Puntos extra en el orden para cortes anchos pero no largos (llegan a la cintura).",
+    "boxy": 12, "drop shoulder": 8, "hombro caido": 8, "heavyweight": 5
+  },
+
   "estilo": {
     "_nota": "Entra si el titulo tiene una palabra de 'tipo' Y una de 'debe_tener'. 'nunca' lo saca siempre. 'nunca_salvo' lo saca salvo que tambien tenga una palabra de 'salvo'.",
     "abajo": {
-      "debe_tener": ["baggy", "wide leg", "wide-leg", "pierna ancha", "relaxed", "loose", "skater", "holgad", "jort", "ancho", "parachute"],
-      "nunca": ["straight", "staright", "slim", "skinny", "pitillo", "jogger", "joggers", "jogging", "puño", "puños", "tapered", "ajustad", "bootcut", "flare", "oxford", "calza", "legging", "bermuda", "cargo", "utility", "talle bajo", "crop",
+      "debe_tener": ["baggy", "wide leg", "wide-leg", "pierna ancha", "loose", "skater", "holgad", "jort", "ancho", "parachute", "carpenter", "double knee"],
+      "nunca": ["straight", "staright", "relaxed", "boot", "501", "505", "511", "514", "slim", "skinny", "pitillo", "jogger", "joggers", "jogging", "puño", "puños", "tapered", "ajustad", "bootcut", "flare", "oxford", "calza", "legging", "bermuda", "talle bajo", "crop",
         "niño", "niña", "infantil",
         "polera", "poleron", "polerón", "polo", "rugby", "conjunto", "chaqueta", "camisa", "hoodie", "sweater", "blusa", "vestido", "falda", "top"],
-      "nunca_salvo": {"palabras": ["recto", "regular", "regular fit", "mom"], "salvo": ["baggy", "ancho", "holgad", "wide leg", "oversize"]},
+      "nunca_salvo": {"palabras": ["recto", "regular", "regular fit", "mom", "cargo", "utility"], "salvo": ["baggy", "ancho", "holgad", "wide leg", "oversize", "parachute"]},
       "tipo": ["jean", "jeans", "pantalon", "pantalón", "pantalones", "buzo", "jort", "jorts", "short", "shorts", "denim", "pant", "pants"]
     },
     "arriba": {
       "debe_tener": ["boxy", "oversize", "oversized", "heavyweight", "drop shoulder", "hombro caido", "hombro caído"],
-      "nunca": ["niño", "niña", "infantil", "crop top", "slim", "ajustad", "muscle", "body", "top"],
+      "nunca": ["niño", "niña", "infantil", "crop top", "slim", "ajustad", "muscle", "body", "top", "conjunto", "longline", "largo", "extra largo"],
       "tipo": ["polera", "poleras", "poleron", "polerón", "camiseta", "t-shirt", "tee", "hoodie", "chaqueta", "casaca", "camisa", "sobrecamisa", "cortaviento", "parka", "sweater", "sweatshirt", "canguro", "overshirt", "chaleco", "bomber", "cardigan", "cárdigan", "crewneck", "polo", "jersey"]
     },
     "zapatillas": {
-      "debe_tener": ["550", "530", "9060", "2002r", "dunk", "air force", "af1", "air max 95", "campus", "samba", "forum", "superstar", "knu skool", "knu-skool", "1130", "suede xl"],
-      "nunca": ["niño", "niña", "infantil", "bebé", "kids", "junior", "jr", "ps", "td", "gs", "sandalia", "chala", "calcetin", "calcetín", "mochila"],
-      "tipo": ["zapatilla", "zapatillas", "sneaker", "sneakers", "tenis", "dunk", "air force", "campus", "samba", "forum", "superstar", "knu skool"]
+      "debe_tener": ["550", "530", "9060", "2002r", "dunk", "air force", "af1", "air max 95", "campus", "samba", "forum", "superstar", "knu skool", "knu-skool", "1130", "suede xl",
+        "air max", "air max plus", "tn", "uptempo", "shox", "1906r", "1906", "xlg", "timberland", "dr martens", "dr. martens", "1460", "2976"],
+      "nunca": ["niño", "niña", "infantil", "bebé", "kids", "junior", "jr", "ps", "td", "gs", "sandalia", "chala", "calcetin", "calcetín", "mochila", "jordan", "jumpman"],
+      "tipo": ["zapatilla", "zapatillas", "sneaker", "sneakers", "tenis", "dunk", "air force", "campus", "samba", "forum", "superstar", "knu skool", "air max", "uptempo", "shox",
+        "bota", "botas", "botin", "botín", "bototo", "boot", "boots", "zapato", "zapatos"]
     }
   },
 

@@ -120,7 +120,7 @@ DATA.forEach((p, i) => {
       img: (v && v.img) || p.img, url: (v && v.url) || p.url});
   });
 });
-const pasa = z => (!S.genero || z.p.genero === S.genero || z.p.genero === 'unisex') && (!S.max || z.p.precio <= S.max);
+const pasa = z => tallaOk(z.p) && (!S.genero || z.p.genero === S.genero || z.p.genero === 'unisex') && (!S.max || z.p.precio <= S.max);
 
 // Costo de usar una pieza para un color objetivo: diferencia de color + cuanto le queda a tu estacion.
 // La estacion pesa fuerte cerca de la cara (parte superior) y poco en pantalon y zapatillas.
@@ -297,7 +297,7 @@ function outfitHTML() {
     const pe = S.est ? puntaje(z.hex, S.est) : null;
     return `<div class="slot ${fijas[s] ? 'fija' : ''}">
       <div class="srot">${ROTULO[s]} <span class="obj"><i style="background:${obj}"></i>objetivo · <i style="background:${z.hex}"></i>${esc(z.n)} (${cerca})</span></div>
-      <a href="${esc(z.url)}" target="_blank" class="simg">${z.img ? `<img src="${esc(z.img)}" loading="lazy" alt="">` : '<span class="nofoto">Sin foto</span>'}</a>
+      <a href="${esc(z.url)}" target="_blank" class="simg">${z.img ? `<img src="${esc(z.img)}" data-main="${esc(z.p.img || z.img)}" loading="lazy" referrerpolicy="no-referrer" alt="" onerror="fotoError(this)">` : '<span class="nofoto">Sin foto</span>'}</a>
       <div class="marca">${esc(z.p.marca || '—')} · ${esc(z.p.fuente)}</div>
       <div class="tit">${esc(z.p.titulo)}</div>
       <div class="precio">${clp(z.p.precio)}${z.p.precio_antes ? `<s>${clp(z.p.precio_antes)}</s>` : ''}</div>

@@ -1,4 +1,7 @@
 [build]
+  # Sitio estático: resultados.html se genera localmente con comparador.py,
+  # así que Netlify no necesita compilar nada (no se usa Hugo).
+  command = "echo 'Sitio estático: sin paso de build'"
   publish = "."
 
 [[redirects]]

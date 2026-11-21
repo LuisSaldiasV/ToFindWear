@@ -12,9 +12,13 @@ echo   3) Actualizar parte superior
 echo   4) Actualizar zapatillas
 echo   5) Solo abrir (Enter)
 echo   6) Ver registro de la ultima actualizacion automatica
+echo   7) Importar tiendas desde el navegador (Kagi, Haze...)
+echo   8) Procesar catalogos guardados con el marcador
 echo.
-set /p op="  Opcion (1-6): "
+set /p op="  Opcion (1-8): "
 if "%op%"=="6" (start "" notepad "%~dp0log.txt" & exit /b)
+if "%op%"=="7" (python importar.py & exit /b)
+if "%op%"=="8" python comparador.py importar
 if "%op%"=="1" python comparador.py todo
 if "%op%"=="2" python comparador.py abajo
 if "%op%"=="3" python comparador.py arriba

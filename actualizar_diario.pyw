@@ -43,8 +43,12 @@ def main():
         sys.path.insert(0, str(BASE))
         import comparador
         with redirect_stdout(buf), redirect_stderr(buf):
-            comparador.main(["todo"])
-        MARCA.write_text(hoy)
+            r = comparador.main(["todo"])
+        if r == 1:      # config.json con errores: avisar en pantalla y reintentar en el proximo inicio
+            import ctypes
+            ctypes.windll.user32.MessageBoxW(None, buf.getvalue()[-900:], "Comparador de ropa: revisa config.json", 0x30)
+        else:
+            MARCA.write_text(hoy)
     except Exception:
         buf.write(traceback.format_exc())
     escribir_log(buf.getvalue())

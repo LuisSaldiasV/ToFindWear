@@ -120,7 +120,7 @@ DATA.forEach((p, i) => {
       img: (v && v.img) || p.img, url: (v && v.url) || p.url});
   });
 });
-const pasa = z => tallaOk(z.p) && (!S.genero || z.p.genero === S.genero || z.p.genero === 'unisex') && (!S.max || z.p.precio <= S.max);
+const pasa = z => tallaOk(z.p) && !esOculto(z.p) && (!S.genero || z.p.genero === S.genero || z.p.genero === 'unisex') && (!S.max || z.p.precio <= S.max);
 
 // Costo de usar una pieza para un color objetivo: diferencia de color + cuanto le queda a tu estacion.
 // La estacion pesa fuerte cerca de la cara (parte superior) y poco en pantalon y zapatillas.

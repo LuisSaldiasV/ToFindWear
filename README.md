@@ -31,6 +31,16 @@ En Windows también puedes usar `abrir.bat`, que muestra un menú.
 
 `actualizar_diario.pyw` se ejecuta al iniciar Windows, sin abrir ventana. Actualiza el catálogo una vez al día y deja el registro en `log.txt`.
 
+### Tiendas Shopify (Kagi, Haze Concept...)
+
+Estas tiendas bloquean la lectura automática, así que se importan desde tu navegador:
+
+1. En `abrir.bat`, elige **7**. Se abre una página con el marcador **Guardar catálogo TFW**: arrástralo a la barra de favoritos (solo la primera vez).
+2. Abre cada tienda y aprieta el marcador. Se descarga `tfw_<tienda>.json` en Descargas.
+3. En `abrir.bat`, elige **8** (o espera la actualización diaria). Los archivos se procesan y se mueven a `importar/procesados/`.
+
+El marcador sirve en cualquier tienda hecha con Shopify, aunque no esté en `config.json`.
+
 ## Configuración
 
 En `config.json` se ajustan las búsquedas de cada grupo y los filtros. Las palabras se comparan sin distinguir mayúsculas.
@@ -41,7 +51,7 @@ En `config.json` se ajustan las búsquedas de cada grupo y los filtros. Las pala
 |---|---|
 | `comparador.py` | Búsqueda, filtrado, historial y generación del HTML |
 | `colores.py` | Detección y agrupación de colores |
-| `importar.py` | Importa productos de forma manual |
+| `importar.py` | Importa catálogos de tiendas Shopify guardados desde el navegador |
 | `plantilla.html` | Plantilla de la página de resultados |
 | `wada.js` | Paleta de Sanzo Wada (datos MIT, © Matt DesLauriers) |
 | `netlify.toml` | Publicación en Netlify (`/` abre `resultados.html`) |
@@ -54,3 +64,10 @@ En el celular, abre la URL y elige **"Agregar a pantalla de inicio"**.
 ## Notas
 
 Las consultas a las tiendas van espaciadas (2 a 4 s entre una y otra) para no saturar los sitios ni provocar bloqueos.
+
+## Protecciones y herramientas
+- **Revisión de `config.json`:** antes de cada corrida se revisa el archivo. Si tiene un error (por ejemplo, una coma de más), no se actualiza nada y se indica la línea. En la actualización automática aparece una ventana de aviso.
+- **Tiendas caídas:** se guarda cuántos productos trae cada tienda por día. Si una trae menos del 40 % de lo normal, queda un aviso en `log.txt` y sus datos anteriores se mantienen. La limpieza de productos viejos se cuenta desde la última lectura buena de cada tienda.
+- **Barra de estado:** bajo los filtros de la página se ve cuándo se leyó cada tienda. Las importadas con el marcador muestran "reimportar" cuando tienen más de 7 días.
+- **Favoritos y ocultos:** cada producto tiene los botones ☆ y ✕, y el selector de vista permite ver solo favoritos o recuperar los ocultos. Se guardan en el navegador.
+- **Pruebas del filtro:** `python test_estilo.py`. Conviene correrlas después de editar `config.json`. Si se cuela un producto, agrega su título a la lista de casos.

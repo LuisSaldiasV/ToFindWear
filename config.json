@@ -11,9 +11,11 @@
       "jorts",
       "buzo baggy",
       "pantalon buzo wide leg",
-      "pantalon cargo baggy",
       "pantalon parachute",
-      "jeans carpenter"
+      "jeans carpenter",
+      "jeans bearcliff",
+      "pantalon bearcliff",
+      "jeans americanino"
     ],
     "arriba": [
       "polera boxy",
@@ -25,7 +27,10 @@
       "chaqueta oversize",
       "chaqueta denim oversize",
       "camisa boxy",
-      "cortaviento oversize"
+      "cortaviento oversize",
+      "polera bearcliff",
+      "poleron bearcliff",
+      "polera americanino"
     ],
     "zapatillas": [
       "zapatillas new balance 550",
@@ -80,6 +85,12 @@
 
   "marcas_excluidas": ["mango", "zara", "h&m", "shein", "forever 21", "bershka", "pull&bear", "pull and bear", "stradivarius", "primark", "topshop", "temu", "fashion's park", "fashion´s park", "agw"],
 
+  "marcas_excluidas_ropa": {
+    "_nota": "Solo para pantalones y parte superior: las zapatillas de estas marcas siguen apareciendo.",
+    "marcas": ["nike", "adidas", "adidas originals", "under armour", "puma", "reebok", "new balance", "asics", "fila", "umbro",
+               "kappa", "champion", "starter", "konko active", "lotto", "diadora", "mizuno", "jordan"]
+  },
+
   "quitar_del_titulo": ["tommy jeans", "pepe jeans", "calvin klein jeans", "dirty jeans", "gloria jeans", "jeans co"],
 
   "dias_sin_ver_para_borrar": 30,
@@ -88,6 +99,11 @@
     "_nota": "Con 'Solo mi talla' en la pagina se ocultan prendas que traen tallas y ninguna es tuya. Las que no informan tallas se muestran igual.",
     "abajo": ["44", "46", "34", "36", "L", "XL"],
     "arriba": ["M", "L"]
+  },
+
+  "marcas_favoritas": {
+    "_nota": "Puntos extra en el orden para las marcas que te gustan (se compara con la marca o la tienda).",
+    "bearcliff": 15, "americanino": 10, "kagi": 15, "dos lobos": 15, "haze concept": 15, "hazeconcept": 15
   },
 
   "prioridad_arriba": {
@@ -99,10 +115,10 @@
     "_nota": "Entra si el titulo tiene una palabra de 'tipo' Y una de 'debe_tener'. 'nunca' lo saca siempre. 'nunca_salvo' lo saca salvo que tambien tenga una palabra de 'salvo'.",
     "abajo": {
       "debe_tener": ["baggy", "wide leg", "wide-leg", "pierna ancha", "loose", "skater", "holgad", "jort", "ancho", "parachute", "carpenter", "double knee"],
-      "nunca": ["straight", "staright", "relaxed", "boot", "501", "505", "511", "514", "slim", "skinny", "pitillo", "jogger", "joggers", "jogging", "puño", "puños", "tapered", "ajustad", "bootcut", "flare", "oxford", "calza", "legging", "bermuda", "talle bajo", "crop",
+      "nunca": ["straight", "staright", "relaxed", "boot", "501", "505", "511", "514", "slim", "skinny", "pitillo", "jogger", "joggers", "jogging", "puño", "puños", "tapered", "ajustad", "bootcut", "flare", "oxford", "calza", "legging", "bermuda", "cargo", "utility", "talle bajo", "crop",
         "niño", "niña", "infantil",
         "polera", "poleron", "polerón", "polo", "rugby", "conjunto", "chaqueta", "camisa", "hoodie", "sweater", "blusa", "vestido", "falda", "top"],
-      "nunca_salvo": {"palabras": ["recto", "regular", "regular fit", "mom", "cargo", "utility"], "salvo": ["baggy", "ancho", "holgad", "wide leg", "oversize", "parachute"]},
+      "nunca_salvo": {"palabras": ["recto", "regular", "regular fit", "mom"], "salvo": ["baggy", "ancho", "holgad", "wide leg", "oversize", "parachute"]},
       "tipo": ["jean", "jeans", "pantalon", "pantalón", "pantalones", "buzo", "jort", "jorts", "short", "shorts", "denim", "pant", "pants"]
     },
     "arriba": {
